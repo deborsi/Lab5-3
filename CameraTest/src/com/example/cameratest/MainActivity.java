@@ -41,48 +41,51 @@ public class MainActivity extends Activity {
         return true;
     }
     
+    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
     //This method creates an intent. 
     //It is told that we need camera action, and the results should be saved in a location that is sent to the intent.
     public void takeAPhoto() {
 		
-    	String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyCameraTest";
-		File folder = new File(path);
+    	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    	String folder = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyCameraTest";
+		File folderF = new File(folder);
 		
-		if (!folder.exists()){
-			folder.mkdir();
+		if (!folderF.exists()){
+			folderF.mkdir();
 		}
 			
-		String imagePathAndFileName = path + File.separator + 
+		String imageFilePath = folder + File.separator + 
 				String.valueOf(System.currentTimeMillis()) + ".jpg" ;
 		
-		File imageFile = new File(imagePathAndFileName);
+		File imageFile = new File(imageFilePath);
 		imageFileUri = Uri.fromFile(imageFile);
 		
-		//TODO: Add your code here ...
-		//TODO: Add your code here ...
-		//TODO: Add your code here ...
-
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
     
     //This method is run after returning back from camera activity:
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
-    	if (requestCode == 12345){
-			TextView tv = (TextView)findViewById(R.id.status);
-			
+	
+    	TextView tv = (TextView) findViewById(R.id.status);
+    	
+    	if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){			
 			if (resultCode == RESULT_OK){
-			//TODO: Add your code here ...
-			//TODO: Add your code here ...
-			//TODO: Add your code here ...
-			//TODO: Add your code here ...
-			}
-			else
-				if (resultCode == RESULT_CANCELED){
-					tv.setText("Photo was canceled!");
+				if(data != null)
+				{
+					tv.setText(data.getStringExtra("message"));
+				}else{
+					tv.setText("Photo OK!");
 				}
-				else
-					tv.setText("What happened?!!");
-		}
+				ImageButton button = (ImageButton)findViewById(R.id.TakeAPhoto);
+				button.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
+			}
+			else if (resultCode == RESULT_CANCELED){
+				tv.setText("Photo was canceled!");
+			}else{
+				tv.setText("What happened?!!");
+				}
+    	}
     }
 }

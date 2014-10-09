@@ -84,15 +84,17 @@ public class BogoPicGenActivity extends Activity {
 		});
 		//takeAPhoto();
 	}
+	
 	//----------------------------------------------------------------------------------------------------
 	//This method generates a random igame by calling BogoPicGen.generateBitmap():
 	//The result should be saved in newBMP
 	//Also should be reflected in the imageButton
 	private void setBogoPic() {
-		//TODO: Add your code here:
-		//TODO: Add your code here:
-		//TODO: Add your code here:
-		//TODO: Add your code here:
+		
+		Toast.makeText(this, "Generating Photo....", Toast.LENGTH_LONG).show();
+		ImageButton button = (ImageButton)findViewById(R.id.TakeAPhoto);
+		newBMP = BogoPicGen.generateBitmap(400, 400);
+		button.setImageBitmap(newBMP);
 	}
 	//----------------------------------------------------------------------------------------------------
 	//----------------------------------------------------------------------------------------------------
@@ -104,12 +106,11 @@ public class BogoPicGenActivity extends Activity {
 			try {
 				if (intent.getExtras() != null) {    
 					if (okPressed) {
-						//TODO: Add your code here:
-						//TODO: Add your code here:
-						//TODO: Add your code here:
-						//TODO: Add your code here:
-						//TODO: Add your code here:
-						//TODO: Add your code here:
+						Uri uri = (Uri)intent.getExtras().get(MediaStore.EXTRA_OUTPUT);
+						OutputStream out = new FileOutputStream(new File(uri.getPath()));
+						newBMP.compress(Bitmap.CompressFormat.JPEG, 75, out);
+						out.close();
+						setResult(RESULT_OK);
 					}//if (okPressed).
 					else{//cancel is pressed:
 						Toast.makeText(this, "Photo Cancelled!", Toast.LENGTH_LONG).show();
